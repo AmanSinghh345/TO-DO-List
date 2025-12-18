@@ -28,14 +28,18 @@ Tasks persist even after page refresh.
 ## 📂 Project Structure
 
 ├── index.html
+
 ├── style.css
+
 ├── script.js
+
 └── README.md
 
 ## 🔧 How to Run Locally
 
 1. Clone the repository:
-```bash
-git clone git@github.com:AmanSinghh345/TO-DO-List.git
+   
+        ```bash
+        git clone git@github.com:AmanSinghh345/TO-DO-List.git
 
 2. Open index.html in your browser
