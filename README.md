@@ -39,7 +39,7 @@ Tasks persist even after page refresh.
 
 1. Clone the repository:
    
-        ```
-        git clone git@github.com:AmanSinghh345/TO-DO-List.git
+    ```
+    git clone git@github.com:AmanSinghh345/TO-DO-List.git
 
 2. Open index.html in your browser
