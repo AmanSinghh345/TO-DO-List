@@ -1,55 +1,81 @@
 const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 const deleteButton = document.getElementById("deleteButton");
+const todoCount = document.getElementById("todoCount");
 
-function addTask(){
-    if (inputBox.value==='') {
-        alert("You must write something!");
-    }
-    else {
+let tasks = [];
+
+/* ---------- Load on Refresh ---------- */
+function showTask(){
+    tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    listContainer.innerHTML = "";
+
+    tasks.forEach((task, index) => {
         let li = document.createElement("li");
-        li.innerHTML = inputBox.value;
-        listContainer.appendChild(li);
+        li.innerText = task.text;
+
+        if(task.completed) li.classList.add("checked");
+
+        li.addEventListener("click", () => {
+            task.completed = !task.completed;
+            saveData();
+            showTask();
+        });
+
         let span = document.createElement("span");
-        span.innerHTML = "\u00d7";
+        span.innerHTML = "×";
+        span.addEventListener("click", (e) => {
+            e.stopPropagation();
+            tasks.splice(index, 1);
+            saveData();
+            showTask();
+        });
+
         li.appendChild(span);
+        listContainer.appendChild(li);
+    });
+
+    updateCount();
+}
+
+/* ---------- Save ---------- */
+function saveData(){
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+/* ---------- Add Task ---------- */
+function addTask(){
+    if(inputBox.value.trim() === ""){
+        alert("You must write something!");
+        return;
     }
+
+    tasks.push({
+        text: inputBox.value,
+        completed: false
+    });
+
     inputBox.value = "";
     saveData();
-    updateCount();
+    showTask();
 }
 
-listContainer.addEventListener("click", function(e){
-    if (e.target.tagName === "LI"){
-        e.target.classList.toggle("checked");
-        saveData();
-    }
-    else if (e.target.tagName === "SPAN"){
-        e.target.parentElement.remove();
-        saveData();
-        updateCount();
-    }
-}, false);
+/* ---------- Delete All ---------- */
+deleteButton.addEventListener("click", () => {
+    tasks = [];
+    saveData();
+    showTask();
+});
 
-// Attach delete all once, not on every click
-deleteButton.addEventListener("click", deleteAllTasks);
+/* ---------- Enter Key ---------- */
+inputBox.addEventListener("keypress", (e) => {
+    if(e.key === "Enter") addTask();
+});
 
-function deleteAllTasks(){
-    listContainer.innerHTML = '';
-    localStorage.setItem("data", '');
-    updateCount();
-}
-
-function saveData(){
-    localStorage.setItem("data", listContainer.innerHTML);
-}
-
-function showTask(){
-    listContainer.innerHTML = localStorage.getItem("data") || '';
+/* ---------- Counter ---------- */
+function updateCount(){
+    todoCount.textContent = tasks.length;
+    deleteButton.disabled = tasks.length === 0;
 }
 
 showTask();
-
-function updateCount(){
-    todoCount.textContent = listContainer.querySelectorAll("li").length;
-}
